@@ -1,9 +1,15 @@
+import 'dart:ui';
+
+import 'package:after_layout/after_layout.dart';
 import 'package:demo1/fluro/NavigatorUtil.dart';
 import 'package:demo1/modals/dtkCategorys.dart';
 import 'package:demo1/modals/goods_list_modal.dart';
 import 'package:demo1/provider/category_provider.dart';
 import 'package:demo1/repository/IndexGoodsRepository.dart';
 import 'package:demo1/widgets/RoundUnderlineTabIndicator.dart';
+import 'package:demo1/widgets/component/custom_select_toolbar.dart';
+import 'package:demo1/widgets/flexd/index_header_flexd_widget.dart';
+import 'package:demo1/widgets/flexd/index_main_goods_mini_title_bar.dart';
 import 'package:demo1/widgets/loading_more_list_indicator.dart';
 import 'package:demo1/widgets/my_clipper.dart';
 import 'package:demo1/widgets/pullto_refresh_header.dart';
@@ -24,7 +30,7 @@ import './ddq.dart';
 import 'component/hodgepodge_widget.dart';
 
 class IndexHome extends StatefulWidget {
-  ScrollController mController;
+  final ScrollController mController;
 
   IndexHome({Key key, this.mController}) : super(key: key);
 
@@ -33,15 +39,22 @@ class IndexHome extends StatefulWidget {
 }
 
 class _IndexHomeState extends State<IndexHome>
-    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+    with
+        AutomaticKeepAliveClientMixin,
+        TickerProviderStateMixin,
+        AfterLayoutMixin<IndexHome> {
 //   状态管理
   CarouselProviderModal carouselProviderModal;
   DtkIndexGoodsModal dtkIndexGoodsModal;
   CategoryProvider categoryProvider;
   List<CategoryItem> categorys = [];
+  GlobalKey _titleKey = GlobalKey();
+
+  bool _titleIsInTop = false;
 
   //dddd
   IndexGoodsRepository indexGoodsRepository = IndexGoodsRepository();
+  ScrollController _mainScrollController = ScrollController();
 
   TabController tabController;
 
@@ -52,12 +65,14 @@ class _IndexHomeState extends State<IndexHome>
 
   @override
   void initState() {
+    super.initState();
     tabController = TabController(length: 1, vsync: this);
     this._initAliBC();
   }
 
   void _initAliBC() async {
-    var result = await FlutterAlibc.initAlibc(version:"1.0.0",appName:"典典的小卖部");
+    var result =
+        await FlutterAlibc.initAlibc(version: "1.0.0", appName: "典典的小卖部");
     print("阿里百川初始化:${result.errorCode}");
   }
 
@@ -152,9 +167,8 @@ class _IndexHomeState extends State<IndexHome>
 
   // 首页商品列表
   Widget _buildGoodsList() {
-    return LoadingMoreSliverList(
-        SliverListConfig<GoodsItem>(
-        waterfallFlowDelegate: WaterfallFlowDelegate(
+    return LoadingMoreSliverList(SliverListConfig<GoodsItem>(
+      extendedListDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           crossAxisSpacing: ScreenUtil().setHeight(30),
           mainAxisSpacing: ScreenUtil().setWidth(30)),
@@ -182,6 +196,7 @@ class _IndexHomeState extends State<IndexHome>
 
   @override
   void didChangeDependencies() async {
+    super.didChangeDependencies();
     final carouselProviderModal = Provider.of<CarouselProviderModal>(context);
     final dtkIndexGoodsModal = Provider.of<DtkIndexGoodsModal>(context);
     final categoryProvider = Provider.of<CategoryProvider>(context);
@@ -193,16 +208,15 @@ class _IndexHomeState extends State<IndexHome>
 
   @override
   void dispose() {
+    super.dispose();
     indexGoodsRepository.dispose();
   }
-
-
 
   @override
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 
-  void loadDatas(
+  Future<void> loadDatas(
       {CarouselProviderModal carouselProviderModal,
       DtkIndexGoodsModal dtkIndexGoodsModal,
       CategoryProvider categoryProvider}) async {
@@ -231,13 +245,19 @@ class _IndexHomeState extends State<IndexHome>
     }
   }
 
-
   // body
   Widget _buildIndexBody(CarouselProviderModal cpm) {
     return LoadingMoreCustomScrollView(
+      controller: _mainScrollController,
       slivers: <Widget>[
-
-
+        SliverPersistentHeader(
+          delegate: IndexFlexdHeaderWidget(child: [
+            _buildAppbar(),
+            _buildCategoryTabbar(),
+          ], color: carouselProviderModal.curColor),
+          floating: true,
+          pinned: true,
+        ),
 
         // appbar和tab和轮播图
         SliverToBoxAdapter(
@@ -257,15 +277,18 @@ class _IndexHomeState extends State<IndexHome>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                MenuIcon(0,onTap:(){
-                  NavigatorUtil.gotoHaodankuGoodsDetailPage(context, "619590382526");
+                MenuIcon(0, onTap: () {
+                  NavigatorUtil.gotoHaodankuGoodsDetailPage(
+                      context, "619590382526");
                 }),
-                MenuIcon(1,onTap: () async {
-                  print("正在唤醒淘宝登录");
-                  var result = await FlutterAlibc.loginTaoBao();
-                  print("获取到淘宝用户信息:${result.data.openSid}");
-                }
-                ,),
+                MenuIcon(
+                  1,
+                  onTap: () async {
+                    print("正在唤醒淘宝登录");
+                    var result = await FlutterAlibc.loginTaoBao();
+                    print("获取到淘宝用户信息:${result.data.openSid}");
+                  },
+                ),
                 MenuIcon(2),
                 MenuIcon(3),
                 MenuIcon(4),
@@ -284,16 +307,23 @@ class _IndexHomeState extends State<IndexHome>
         ),
 
         /// 商品列表标题
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: EdgeInsets.only(
-                top: ScreenUtil().setHeight(50),
-                bottom: ScreenUtil().setHeight(50),
-                left: ScreenUtil().setWidth(50)),
-            child: Text("佛系推荐",
-                style: TextStyle(
-                    fontSize: ScreenUtil().setSp(70), color: Colors.black)),
-          ),
+        SliverPersistentHeader(
+          pinned: true,
+          delegate: IndexMainGoodsMiniTitleBar(
+              height: 220.h,
+              child: AnimatedContainer(
+                key: _titleKey,
+                duration: Duration(milliseconds: 300),
+                color: _titleIsInTop ? Colors.white : Color.fromRGBO(235,235,235, 1),
+                child: CustomSelectToolbar(
+                  items: [
+                    SelectMenu(title: "佛系推荐", subTitle: '发现好物'),
+                    SelectMenu(title: "精选", subTitle: '猜你喜欢'),
+                  ],
+                  select: 0,
+                  hideSubTitle:_titleIsInTop
+                ),
+              )),
         ),
 
         //商品列表 (瀑布流)
@@ -310,67 +340,11 @@ class _IndexHomeState extends State<IndexHome>
             clipper: MyClipper(),
             child: AnimatedContainer(
               duration: Duration(milliseconds: 1000),
-              height: ScreenUtil().setHeight(carouselHeight+450),
+              height: ScreenUtil().setHeight(carouselHeight + 100),
               color: carouselISLoaded ? cpm.curColor : Colors.white,
             )),
         Column(
           children: <Widget>[
-            // appbar
-            AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              title: Container(
-                height: ScreenUtil().setHeight(140),
-                child: TextField(
-                  textAlignVertical: TextAlignVertical.center,
-                  textAlign: TextAlign.left,
-                  decoration: InputDecoration(
-                    hintText: '输入商品名或者宝贝标题搜索',
-                    border: InputBorder.none,
-                    alignLabelWithHint: true,
-                    filled: true,
-                    fillColor: Colors.white,
-                    suffixIcon: Icon(
-                      Icons.search,
-                      color: Colors.grey,
-                    ),
-                    hintStyle: TextStyle(
-                      height: 1,
-                    ),
-                  ),
-                  style: TextStyle(height: 1, color: Colors.black),
-                ),
-              ),
-              actions: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(left: 5.0, right: 10.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: () {
-                          //跳转到搜索页面
-                          Navigator.pushNamed(context, 'search');
-                        },
-                        child: Icon(
-                          Icons.message,
-                          size: ScreenUtil().setSp(80),
-                        ),
-                      ),
-                      Text(
-                        "消息",
-                        style: TextStyle(fontSize: ScreenUtil().setSp(45)),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-
-            carouselISLoaded && categortListIsLoaded
-                ? _tabs()
-                : _buildTabShimmer(),
             SizedBox(
               height: ScreenUtil().setHeight(20),
             ),
@@ -378,12 +352,108 @@ class _IndexHomeState extends State<IndexHome>
                 ? IndexTopSwiper(
                     carouselProviderModal: this.carouselProviderModal,
                     datum: cpm.carousels,
-                  height: carouselHeight,
+                    height: carouselHeight,
                   )
                 : _buildGJP()
           ],
         ),
       ],
     );
+  }
+
+  Widget _buildCategoryTabbar() {
+    return carouselISLoaded && categortListIsLoaded
+        ? _tabs()
+        : _buildTabShimmer();
+  }
+
+  Widget _buildAppbar() {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      title: Container(
+        height: ScreenUtil().setHeight(140),
+        child: TextField(
+          textAlignVertical: TextAlignVertical.center,
+          textAlign: TextAlign.left,
+          decoration: InputDecoration(
+            hintText: '输入商品名或者宝贝标题搜索',
+            border: InputBorder.none,
+            alignLabelWithHint: true,
+            filled: true,
+            fillColor: Colors.white,
+            suffixIcon: Icon(
+              Icons.search,
+              color: Colors.grey,
+            ),
+            hintStyle: TextStyle(
+              height: 1,
+            ),
+          ),
+          style: TextStyle(height: 1, color: Colors.black),
+        ),
+      ),
+      actions: <Widget>[
+        Container(
+          margin: EdgeInsets.only(left: 5.0, right: 10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  //跳转到搜索页面
+                  Navigator.pushNamed(context, 'search');
+                },
+                child: Icon(
+                  Icons.message,
+                  size: ScreenUtil().setSp(80),
+                ),
+              ),
+              Text(
+                "消息",
+                style: TextStyle(fontSize: ScreenUtil().setSp(45)),
+              )
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  //获取title的位置信息
+  double _titleLocationHandler() {
+    RenderBox renderBox = _titleKey.currentContext.findRenderObject();
+    Offset offset = renderBox.localToGlobal(Offset(0, 0));
+    return offset.dy;
+  }
+
+  // 监听主滑动距离
+  void _addMainScrollListening() {
+    double topAppbarHei =
+        330.h + MediaQueryData.fromWindow(window).padding.top; // 顶部搜索框和选项卡高度
+    _mainScrollController.addListener(() {
+      double titleTopHei = _titleLocationHandler();
+      if (titleTopHei <= topAppbarHei) {
+        if(!_titleIsInTop){
+          setState(() {
+            _titleIsInTop = true;
+          });
+        }
+      }else{
+        if(_titleIsInTop){
+          setState(() {
+            _titleIsInTop = false;
+          });
+        }
+      }
+
+    });
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    _titleLocationHandler();
+    _addMainScrollListening();
   }
 }

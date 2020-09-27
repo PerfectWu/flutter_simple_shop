@@ -29,22 +29,23 @@ dependencies:
   fsuper: ^0.1.5
   flustars: ^0.3.2
   common_utils: ^1.2.1
-  extended_image: '0.7.2'
-  extended_image_library: '0.2.1'
-  waterfall_flow: ^0.1.5  # 国产瀑布流
-  loading_more_list: ^1.0.5
-  extended_list: ^0.1.5
+  extended_image: ^1.1.2
+  extended_image_library: ^0.3.0
+  waterfall_flow: ^2.0.3  # 国产瀑布流
+  loading_more_list: ^3.1.1
+  extended_list: ^2.0.2
   pull_to_refresh_notification: ^0.3.4
   shimmer: ^1.1.1 #骨架屏
-  flutter_svg: ^0.17.4
-  extended_text_field: ^0.5.0
-  extended_text: ^0.7.1
+  flutter_svg: ^0.19.0
+  extended_text_field: ^4.0.0
+  extended_text: ^4.0.0
   flutter_emoji: ^2.2.1
   html: ^0.14.0+3
   image_picker: ^0.6.6+5
   extended_tabs: ^0.2.3
   luhenchang_plugin: ^0.1.2
   flutter_alibc: ^0.0.15 # 淘宝登录
+  after_layout: ^1.0.7+2
 
 
 dev_dependencies:

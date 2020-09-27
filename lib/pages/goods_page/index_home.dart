@@ -148,7 +148,7 @@ class _GoodsListPageState extends State<GoodsListPage>
                 // 商品列表
                 LoadingMoreSliverList(SliverListConfig<GoodsItem>(
                   sourceList: goodsListRepository,
-                  waterfallFlowDelegate: WaterfallFlowDelegate(
+                  extendedListDelegate: SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10),
