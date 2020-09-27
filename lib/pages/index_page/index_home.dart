@@ -314,7 +314,12 @@ class _IndexHomeState extends State<IndexHome>
               child: AnimatedContainer(
                 key: _titleKey,
                 duration: Duration(milliseconds: 300),
-                color: _titleIsInTop ? Colors.white : Color.fromRGBO(235,235,235, 1),
+                decoration: BoxDecoration(
+                  color: _titleIsInTop ? Colors.white : Color.fromRGBO(235,235,235, 1),
+                  boxShadow: [
+                    BoxShadow(color: Colors.white,blurRadius: 2.0,spreadRadius: 2.0,offset: Offset(1.0,1.0))
+                  ]
+                ),
                 child: CustomSelectToolbar(
                   items: [
                     SelectMenu(title: "佛系推荐", subTitle: '发现好物'),

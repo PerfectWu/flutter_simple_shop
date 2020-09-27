@@ -1,4 +1,5 @@
 import 'package:after_layout/after_layout.dart';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -16,26 +17,27 @@ class CustomSelectToolbar extends StatefulWidget {
 
 class _CustomSelectToolbarState extends State<CustomSelectToolbar>
     with AfterLayoutMixin<CustomSelectToolbar> {
-
-
   @override
   Widget build(BuildContext context) {
     bool hide = widget.hideSubTitle;
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 50.w,vertical: 10.h),
+      margin: EdgeInsets.symmetric(horizontal: 50.w, vertical: 10.h),
       child: getItemSize() > 4
           ? Container(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children:
-                      widget.items.map((f) => _buildItemWidget(f,hide)).toList(),
+                  children: widget.items
+                      .map((f) => _buildItemWidget(f, hide, widget.select))
+                      .toList(),
                 ),
               ),
             )
           : Container(
               child: Row(
-                children: widget.items.map((f) => _buildItemWidget(f,hide)).toList(),
+                children: widget.items
+                    .map((f) => _buildItemWidget(f, hide, widget.select))
+                    .toList(),
               ),
             ),
     );
@@ -49,7 +51,8 @@ class _CustomSelectToolbarState extends State<CustomSelectToolbar>
     return Colors.black;
   }
 
-  Widget _buildItemWidget(SelectMenu selectMenu,bool hideSubTitle) {
+  Widget _buildItemWidget(
+      SelectMenu selectMenu, bool hideSubTitle, int select) {
     Widget widget = Container(
       width: getItemWidgetWidth(),
       child: Container(
@@ -63,12 +66,23 @@ class _CustomSelectToolbarState extends State<CustomSelectToolbar>
                   color: _buildPrimaryColor(getIndexNumber(selectMenu)),
                   fontSize: 60.sp),
             ),
-            !hideSubTitle?Text(
-              selectMenu.subTitle,
-              style: TextStyle(fontSize: 50.sp, color: Colors.grey),
-            ):Container()
-
-
+            !hideSubTitle
+                ? Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                    decoration: BoxDecoration(
+                        borderRadius: getIndexNumber(selectMenu) == select
+                            ? BorderRadius.all(Radius.circular(15.0))
+                            : null,
+                        color: getIndexNumber(selectMenu) == select
+                            ? Colors.redAccent
+                            : Colors.transparent),
+                    child: Text(
+                      selectMenu.subTitle,
+                      style: TextStyle(fontSize: 45.sp, color:getIndexNumber(selectMenu)==select ? Colors.white : Colors.grey),
+                    ),
+                  )
+                : Container()
           ],
         ),
       ),
