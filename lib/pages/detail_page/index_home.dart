@@ -21,7 +21,7 @@ import './action_buttons.dart';
 import '../../widgets/no_data.dart';
 
 class DetailIndex extends StatefulWidget {
-  String goods_id;
+  final String goods_id;
 
   DetailIndex({this.goods_id});
 
@@ -427,7 +427,6 @@ class _DetailIndexState extends State<DetailIndex> {
   double _getCommissionNum() {
     GoodsDetail goodsItem = goodsDetailProvider.goodInfo;
     double rate = goodsItem.commissionRate;
-    print("${goodsItem.commissionType}---${goodsItem.commissionRate}");
     double jiner = goodsItem.actualPrice * (rate / 100); // 实际获得金额
     print("可获得佣金:${jiner}");
     // 给用户的佣金

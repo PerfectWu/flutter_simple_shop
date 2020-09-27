@@ -60,29 +60,41 @@ class _CustomSelectToolbarState extends State<CustomSelectToolbar>
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              selectMenu.title,
-              style: TextStyle(
-                  color: _buildPrimaryColor(getIndexNumber(selectMenu)),
-                  fontSize: 60.sp),
+            AnimatedPadding(
+              duration: Duration(milliseconds: 500),
+              padding: EdgeInsets.only(top: hideSubTitle ? 0 : 0),
+              child: Text(
+                selectMenu.title,
+                style: TextStyle(
+                    color: _buildPrimaryColor(getIndexNumber(selectMenu)),
+                    fontSize: 60.sp),
+              ),
             ),
-            !hideSubTitle
-                ? Container(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                    decoration: BoxDecoration(
-                        borderRadius: getIndexNumber(selectMenu) == select
-                            ? BorderRadius.all(Radius.circular(15.0))
-                            : null,
+            AnimatedOpacity(
+              duration: Duration(milliseconds: 500),
+              opacity: hideSubTitle ? 0.0 : 1.0,
+              child: Visibility(
+                visible: !hideSubTitle,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                  decoration: BoxDecoration(
+                      borderRadius: getIndexNumber(selectMenu) == select
+                          ? BorderRadius.all(Radius.circular(15.0))
+                          : null,
+                      color: getIndexNumber(selectMenu) == select
+                          ? Colors.redAccent
+                          : Colors.transparent),
+                  child: Text(
+                    selectMenu.subTitle,
+                    style: TextStyle(
+                        fontSize: 45.sp,
                         color: getIndexNumber(selectMenu) == select
-                            ? Colors.redAccent
-                            : Colors.transparent),
-                    child: Text(
-                      selectMenu.subTitle,
-                      style: TextStyle(fontSize: 45.sp, color:getIndexNumber(selectMenu)==select ? Colors.white : Colors.grey),
-                    ),
-                  )
-                : Container()
+                            ? Colors.white
+                            : Colors.grey),
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),

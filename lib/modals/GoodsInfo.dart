@@ -1,25 +1,25 @@
 // To parse this JSON data, do
 //
-//     final GoodsInfo = GoodsInfoFromJson(jsonString);
+//     final goodsInfo = goodsInfoFromJson(jsonString);
 
 import 'dart:convert';
 
-GoodsInfo GoodsInfoFromJson(String str) => GoodsInfo.fromJson(json.decode(str));
+GoodsInfo goodsInfoFromJson(String str) => GoodsInfo.fromJson(json.decode(str));
 
-String GoodsInfoToJson(GoodsInfo data) => json.encode(data.toJson());
+String goodsInfoToJson(GoodsInfo data) => json.encode(data.toJson());
 
 class GoodsInfo {
-  int time;
-  int code;
-  String msg;
-  GoodsDetail data;
-
   GoodsInfo({
     this.time,
     this.code,
     this.msg,
     this.data,
   });
+
+  int time;
+  int code;
+  String msg;
+  GoodsDetail data;
 
   factory GoodsInfo.fromJson(Map<String, dynamic> json) => GoodsInfo(
     time: json["time"],
@@ -37,64 +37,6 @@ class GoodsInfo {
 }
 
 class GoodsDetail {
-  int id;
-  String goodsId;
-  String title;
-  String dtitle;
-  double originalPrice;
-  double actualPrice;
-  int shopType;
-  int goldSellers;
-  int monthSales;
-  int twoHoursSales;
-  int dailySales;
-  int commissionType;
-  String desc;
-  int couponReceiveNum;
-  String couponLink;
-  DateTime couponEndTime;
-  DateTime couponStartTime;
-  double couponPrice;
-  String couponConditions;
-  int activityType;
-  DateTime createTime;
-  String mainPic;
-  String marketingMainPic;
-  String sellerId;
-  int cid;
-  double discounts;
-  double commissionRate;
-  int couponTotalNum;
-  int haitao;
-  String activityStartTime;
-  String activityEndTime;
-  String shopName;
-  int shopLevel;
-  double descScore;
-  int brand;
-  int brandId;
-  String brandName;
-  int hotPush;
-  String teamName;
-  String itemLink;
-  int tchaoshi;
-  String detailPics;
-  double dsrScore;
-  double dsrPercent;
-  double shipScore;
-  double shipPercent;
-  double serviceScore;
-  double servicePercent;
-  List<int> subcid;
-  String imgs;
-  String reimgs;
-  int quanMLink;
-  int hzQuanOver;
-  int yunfeixian;
-  double estimateAmount;
-  String shopLogo;
-  int tbcid;
-
   GoodsDetail({
     this.id,
     this.goodsId,
@@ -137,7 +79,6 @@ class GoodsDetail {
     this.teamName,
     this.itemLink,
     this.tchaoshi,
-    this.detailPics,
     this.dsrScore,
     this.dsrPercent,
     this.shipScore,
@@ -152,8 +93,73 @@ class GoodsDetail {
     this.yunfeixian,
     this.estimateAmount,
     this.shopLogo,
+    this.specialText,
+    this.freeshipRemoteDistrict,
+    this.video,
+    this.detailPics,
     this.tbcid,
   });
+
+  int id;
+  String goodsId;
+  String title;
+  String dtitle;
+  double originalPrice;
+  double actualPrice;
+  int shopType;
+  int goldSellers;
+  int monthSales;
+  int twoHoursSales;
+  int dailySales;
+  int commissionType;
+  String desc;
+  int couponReceiveNum;
+  String couponLink;
+  DateTime couponEndTime;
+  DateTime couponStartTime;
+  double couponPrice;
+  String couponConditions;
+  int activityType;
+  DateTime createTime;
+  String mainPic;
+  String marketingMainPic;
+  String sellerId;
+  int cid;
+  double discounts;
+  double commissionRate;
+  int couponTotalNum;
+  int haitao;
+  String activityStartTime;
+  String activityEndTime;
+  String shopName;
+  int shopLevel;
+  double descScore;
+  int brand;
+  int brandId;
+  String brandName;
+  int hotPush;
+  String teamName;
+  String itemLink;
+  int tchaoshi;
+  double dsrScore;
+  double dsrPercent;
+  double shipScore;
+  double shipPercent;
+  double serviceScore;
+  double servicePercent;
+  List<int> subcid;
+  String imgs;
+  String reimgs;
+  int quanMLink;
+  int hzQuanOver;
+  int yunfeixian;
+  int estimateAmount;
+  String shopLogo;
+  List<String> specialText;
+  int freeshipRemoteDistrict;
+  String video;
+  String detailPics;
+  int tbcid;
 
   factory GoodsDetail.fromJson(Map<String, dynamic> json) => GoodsDetail(
     id: json["id"],
@@ -197,7 +203,6 @@ class GoodsDetail {
     teamName: json["teamName"],
     itemLink: json["itemLink"],
     tchaoshi: json["tchaoshi"],
-    detailPics: json["detailPics"],
     dsrScore: json["dsrScore"].toDouble(),
     dsrPercent: json["dsrPercent"].toDouble(),
     shipScore: json["shipScore"].toDouble(),
@@ -210,8 +215,12 @@ class GoodsDetail {
     quanMLink: json["quanMLink"],
     hzQuanOver: json["hzQuanOver"],
     yunfeixian: json["yunfeixian"],
-    estimateAmount: json["estimateAmount"].toDouble(),
+    estimateAmount: json["estimateAmount"],
     shopLogo: json["shopLogo"],
+    specialText: json["specialText"] !=null ? List<String>.from(json["specialText"].map((x) => x)):[],
+    freeshipRemoteDistrict: json["freeshipRemoteDistrict"],
+    video: json["video"],
+    detailPics: json["detailPics"],
     tbcid: json["tbcid"],
   );
 
@@ -257,7 +266,6 @@ class GoodsDetail {
     "teamName": teamName,
     "itemLink": itemLink,
     "tchaoshi": tchaoshi,
-    "detailPics": detailPics,
     "dsrScore": dsrScore,
     "dsrPercent": dsrPercent,
     "shipScore": shipScore,
@@ -272,6 +280,10 @@ class GoodsDetail {
     "yunfeixian": yunfeixian,
     "estimateAmount": estimateAmount,
     "shopLogo": shopLogo,
+    "specialText": List<dynamic>.from(specialText.map((x) => x)),
+    "freeshipRemoteDistrict": freeshipRemoteDistrict,
+    "video": video,
+    "detailPics": detailPics,
     "tbcid": tbcid,
   };
 }
