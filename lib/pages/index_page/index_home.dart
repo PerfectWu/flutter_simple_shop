@@ -4,7 +4,6 @@ import 'package:after_layout/after_layout.dart';
 import 'package:demo1/fluro/NavigatorUtil.dart';
 import 'package:demo1/modals/dtkCategorys.dart';
 import 'package:demo1/modals/goods_list_modal.dart';
-import 'package:demo1/pages/loading/index_loading_skeleton_page.dart';
 import 'package:demo1/provider/category_provider.dart';
 import 'package:demo1/repository/IndexGoodsRepository.dart';
 import 'package:demo1/widgets/RoundUnderlineTabIndicator.dart';
@@ -132,9 +131,29 @@ class _IndexHomeState extends State<IndexHome>
 
   // 轮播图股架屏
   Widget _buildGJP() {
+    if(carouselProviderModal.carousels.isEmpty && carouselISLoaded){
+      return Container(
+        height:480.h,
+        width: MediaQuery.of(context).size.width,
+        margin: EdgeInsets.symmetric(horizontal: 10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: new Border.all(color: Colors.black12, width: 0.5),
+          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.warning,color: Colors.blue,),SizedBox(width: 5,),
+            Text("请到后台设置轮播数据!",style: TextStyle(color: Colors.blue),),
+          ],
+        ),
+      );
+    }
     return Shimmer.fromColors(
         child: Container(
-          height: ScreenUtil().setHeight(480),
+          height:480.h,
           margin: EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -142,8 +161,8 @@ class _IndexHomeState extends State<IndexHome>
             borderRadius: BorderRadius.all(Radius.circular(5.0)),
           ),
         ),
-        baseColor: Colors.grey[100],
-        highlightColor: Colors.grey[200]);
+        baseColor: Colors.grey[200],
+        highlightColor: Colors.grey[300]);
   }
 
   // tab股价屏
@@ -342,7 +361,7 @@ class _IndexHomeState extends State<IndexHome>
             clipper: MyClipper(),
             child: AnimatedContainer(
               duration: Duration(milliseconds: 1000),
-              height: ScreenUtil().setHeight(carouselHeight + 100),
+              height: ScreenUtil().setHeight(carouselHeight + 50),
               color: carouselISLoaded ? cpm.curColor : Colors.white,
             )),
         Column(
@@ -350,7 +369,7 @@ class _IndexHomeState extends State<IndexHome>
             SizedBox(
               height: ScreenUtil().setHeight(20),
             ),
-            carouselISLoaded
+            carouselISLoaded && carouselProviderModal.carousels.isNotEmpty
                 ? IndexTopSwiper(
                     carouselProviderModal: this.carouselProviderModal,
                     datum: cpm.carousels,
