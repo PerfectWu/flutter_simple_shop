@@ -4,6 +4,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:demo1/fluro/NavigatorUtil.dart';
 import 'package:demo1/modals/dtkCategorys.dart';
 import 'package:demo1/modals/goods_list_modal.dart';
+import 'package:demo1/pages/loading/index_loading_skeleton_page.dart';
 import 'package:demo1/provider/category_provider.dart';
 import 'package:demo1/repository/IndexGoodsRepository.dart';
 import 'package:demo1/widgets/RoundUnderlineTabIndicator.dart';
@@ -90,6 +91,7 @@ class _IndexHomeState extends State<IndexHome>
                 return true;
               },
               child: _buildIndexBody(cpm)),
+          // child: IndexLoadingSkeletonPage(),)
     );
   }
 
@@ -148,12 +150,7 @@ class _IndexHomeState extends State<IndexHome>
   Widget _buildTabShimmer() {
     return Shimmer.fromColors(
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-//          decoration: BoxDecoration(
-//            color: Colors.white,
-//            border: new Border.all(color: Colors.black12, width: 0.5),
-//            borderRadius: BorderRadius.all(Radius.circular(5.0)),
-//          ),
+          height: 100.h,
           child: Center(
             child: Text(
               "加载中",

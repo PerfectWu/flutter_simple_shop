@@ -20,7 +20,7 @@ Future post(apiName, {dynamic data}) {
 
 
 String formatUrl(String apiName) {
-  return LOCALHOST_RUL + apiName;
+  return BASE_URL + apiName;
 }
 
 Future request(apiName, {dynamic data, String method}) async {
