@@ -20,26 +20,30 @@ class _CustomSelectToolbarState extends State<CustomSelectToolbar>
   @override
   Widget build(BuildContext context) {
     bool hide = widget.hideSubTitle;
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 50.w, vertical: 10.h),
-      child: getItemSize() > 4
-          ? Container(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: widget.items
-                      .map((f) => _buildItemWidget(f, hide, widget.select))
-                      .toList(),
+    return Stack(
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 50.w, vertical: 10.h),
+          child: getItemSize() > 4
+              ? Container(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: widget.items
+                          .map((f) => _buildItemWidget(f, hide, widget.select))
+                          .toList(),
+                    ),
+                  ),
+                )
+              : Container(
+                  child: Row(
+                    children: widget.items
+                        .map((f) => _buildItemWidget(f, hide, widget.select))
+                        .toList(),
+                  ),
                 ),
-              ),
-            )
-          : Container(
-              child: Row(
-                children: widget.items
-                    .map((f) => _buildItemWidget(f, hide, widget.select))
-                    .toList(),
-              ),
-            ),
+        ),
+      ],
     );
   }
 

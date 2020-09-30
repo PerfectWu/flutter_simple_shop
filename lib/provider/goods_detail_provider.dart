@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:demo1/modals/couponData.dart';
+import 'package:demo1/util/system_toast.dart';
 import 'package:flutter/material.dart';
 import '../util/request_service.dart';
 import '../modals/Result.dart';
@@ -62,7 +63,7 @@ class GoodsDetailProvider with ChangeNotifier {
           }
         });
       } else {
-        print("请先登录!");
+        SystemToast.show('请先登录');
       }
     });
     return true;
