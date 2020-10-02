@@ -1,5 +1,4 @@
 import 'package:after_layout/after_layout.dart';
-import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -80,7 +79,8 @@ class _CustomSelectToolbarState extends State<CustomSelectToolbar>
               child: Visibility(
                 visible: !hideSubTitle,
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                   decoration: BoxDecoration(
                       borderRadius: getIndexNumber(selectMenu) == select
                           ? BorderRadius.all(Radius.circular(15.0))
@@ -103,7 +103,31 @@ class _CustomSelectToolbarState extends State<CustomSelectToolbar>
         ),
       ),
     );
-    return widget;
+    return Stack(
+      children: [
+        widget,
+        Positioned(
+          bottom: 0,
+          left: 0,
+          child: AnimatedOpacity(
+            opacity: hideSubTitle ? 1 : 0,
+            duration: Duration(seconds: 1),
+            child: Container(
+                alignment: Alignment.center,
+                width: getItemWidgetWidth(),
+                child: Container(
+                  width: 120.w,
+                  height: 20.h,
+                  decoration: BoxDecoration(
+                    color:   getIndexNumber(selectMenu) == select ? Colors.redAccent : Colors.transparent,
+                    borderRadius: BorderRadius.all(Radius.circular(15.0))
+                  ),
+                ),
+            ),
+          ),
+        )
+      ],
+    );
   }
 
   int getIndexNumber(SelectMenu selectMenu) {
